@@ -1,6 +1,6 @@
 ## Backend Collector for Client-Side Data
 This is a Node.js backend collector for client-side data that is tracked by [sp.js](#appendix-how-to-use-spjs-analytics-javascript-library) Analytics JavaScript library.
-All tracked events are collected in events.log following [logging best practices](http://dev.splunk.com/view/logging-best-practices/SP-CAAADP6) for Splunk log ingestion.
+All tracked events are collected in a rethinkdb database.
 
 Refer to [appendix](#appendix-how-to-use-spjs-analytics-javascript-library) below on how to use sp.js simple API for tracking.
 
@@ -9,13 +9,13 @@ Refer to [appendix](#appendix-how-to-use-spjs-analytics-javascript-library) belo
 
         $ npm install
 
-* Configure your collector server HTTP/HTTPS ports and SSL certs by changing HTTP_PORT, HTTPS_PORT, and SSL_OPTS variables at the top of server.js file.
+* Configure your collector server HTTP/HTTPS ports, SSL certs, DATABASE and TABLE name by changing HTTP_PORT, HTTPS_PORT, SSL_OPTS, DATABASE, TABLE variables at the top of server.js file.
 	
 	This configuration step can be skipped for **test & dev purposes**. By default, the server binds to ports 3000 and 4443 for HTTP/HTTPS traffic. It also uses self-signed certificates for SSL under `.ssl/` directory, so we recommend you replace them with real certificates for a secure production solution.
 
 * Start the collector server by typing:
 
-		$ node server.js
+		$ node server.js # or supervisor server.js for code reload
 		
 	If you have configured server ports to standard ports 80 and 443, you'll need to `sudo node server.js` to start the server as root unless you have rights to bind to privileged ports < 1024
 	
@@ -26,10 +26,6 @@ Refer to [appendix](#appendix-how-to-use-spjs-analytics-javascript-library) belo
 
 That's it!
 After pointing sp.js library to your collector server address using `sp.load(<YOUR_COLLECTOR_URL>)`, watch the tracked events being collected in newly created local file **events.log**
-
-### Additional Resources
-
-* <a href="http://blogs.splunk.com/2013/10/17/still-using-3rd-party-web-analytics-providers-build-your-own-using-splunk/" target="_blank">Still using 3rd party web analytics providers? Build your own using Splunk!</a>
 
 ## Appendix: How to use sp.js Analytics JavaScript Library
 ### Setup
@@ -115,5 +111,3 @@ sp.init({
 ```
 Parameters:
 * `settings`: settings object to apply one more custom configurations to sp.js. For most purposes, default values are applicable.
-
-
